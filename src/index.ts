@@ -182,7 +182,7 @@ const getAssetFromKV = async (event: FetchEvent, options?: Partial<Options>): Pr
       request.headers.has('range') !== true,
       request.headers.has('if-none-match'),
       response.headers.has('etag'),
-      request.headers.get('if-none-match') === `${pathKey}`,
+      request.headers.get('if-none-match') === `${pathKey}` || request.headers.get('if-none-match') === `W/"${pathKey}"`,
     ].every(Boolean)
 
 
@@ -233,7 +233,7 @@ const getAssetFromKV = async (event: FetchEvent, options?: Partial<Options>): Pr
       response.headers.set('Content-Length', body.length)
       // set etag before cache insertion
       if (!response.headers.has('etag')) {
-        response.headers.set('etag', `${pathKey}`)
+        response.headers.set('etag', `"${pathKey}"`)
       }
       // determine Cloudflare cache behavior
       response.headers.set('Cache-Control', `max-age=${options.cacheControl.edgeTTL}`)
